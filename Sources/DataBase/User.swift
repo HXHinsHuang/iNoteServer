@@ -9,25 +9,29 @@ import MySQLStORM
 import StORM
 
 class User: MySQLStORM {
+    // ⚠️注意⚠️：第一个属性将成为主索引字段，所以应该是ID
     var id: Int = 0
     var phoneNum: String = ""
     var password: String = ""
     var registerTime: String = ""
+    
     fileprivate override init() {
         super.init()
         do {
+            //确保该模型的表格存在
             try setupTable()
         } catch {
             print(error)
         }
     }
     
-    
+    //给对象的表名
     override func table() -> String {
         return "User"
     }
     
     override func to(_ this: StORMRow) {
+//        id = this.data["id"] as! Int
         id = numericCast(this.data["id"] as! Int32)
         phoneNum = this.data["phoneNum"] as! String
         password = this.data["password"] as! String
@@ -49,6 +53,7 @@ class User: MySQLStORM {
 extension User {
     //验证用户是否存在
     fileprivate func findUserWith(_ phone: String) {
+        // fine: 如果在数据库中匹配到了，则将字段的内容赋值给对象中的属性，否则什么都不做
         do {
             try find([("phoneNum",phone)])
         } catch {
@@ -60,6 +65,7 @@ extension User {
     static func register(phone: String, pwd: String) -> (String, Bool) {
         let user = User()
         user.findUserWith(phone)
+        // id为0则表示数据库中不存在
         let exists = user.id != 0 ? true : false
         let message = exists ? "用户已存在" : "注册成功"
         guard !exists else {
@@ -81,12 +87,16 @@ extension User {
         return (message, exists)
     }
     
-    //登录
+    //登录 -> 返回（操作结果， 结果信息， 用户信息）
     static func userLoginWith(phone: String, pwd: String) -> (Bool, String, [String:String]) {
         let user = User()
         user.findUserWith(phone)
         if user.phoneNum == phone && user.password == pwd {
-            let info = ["userId": "\(user.id)", "phoneNum": user.phoneNum, "registerTime": user.registerTime]
+            let info = [
+                            "userId": "\(user.id)",
+                            "phoneNum": user.phoneNum,
+                            "registerTime": user.registerTime
+                        ]
             return (true, "登录成功", info)
         } else {
             let info = ["userId": "", "phoneNum": "", "registerTime": ""]
