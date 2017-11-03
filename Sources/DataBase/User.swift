@@ -13,8 +13,7 @@ class User: MySQLStORM {
     var phoneNum: String = ""
     var password: String = ""
     var registerTime: String = ""
-    fileprivate static let user = User()
-    private override init() {
+    fileprivate override init() {
         super.init()
         do {
             try setupTable()
@@ -59,7 +58,9 @@ extension User {
     
     //注册用户
     static func register(phone: String, pwd: String) -> (String, Bool) {
+        let user = User()
         user.findUserWith(phone)
+        print(user.id,user.phoneNum,user.password,user.registerTime)
         let exists = user.id != 0 ? true : false
         let message = exists ? "用户已存在" : "注册成功"
         guard !exists else {
@@ -83,6 +84,7 @@ extension User {
     
     //登录
     static func userLoginWith(phone: String, pwd: String) -> (Bool, String, [String:String]) {
+        let user = User()
         user.findUserWith(phone)
         if user.phoneNum == phone && user.password == pwd {
             let info = ["userId": "\(user.id)", "phoneNum": user.phoneNum, "registerTime": user.registerTime]

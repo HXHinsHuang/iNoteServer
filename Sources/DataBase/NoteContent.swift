@@ -16,9 +16,7 @@ class NoteContent: MySQLStORM {
     var userId: Int = 0
     var createTime: String = ""
     
-    fileprivate static let note = NoteContent()
-    
-    private override init() {
+    fileprivate override init() {
         super.init()
         do {
             try setupTable()
@@ -55,16 +53,18 @@ extension NoteContent {
     
     // MARK:- 获取
     static func fetchNoteContent(_ userId: String) -> [NoteContent] {
+        let note = NoteContent()
         do {
-            try NoteContent.note.find(["userId":userId])
+            try note.find(["userId":userId])
         } catch {
             print(error)
         }
-        return NoteContent.note.rows()
+        return note.rows()
     }
     
     // MARK:- 添加
     static func addNoteContent(userId: String, title: String, content: String) -> NoteContent {
+        let note = NoteContent()
         note.userId = Int(userId) ?? 0
         note.title = title
         note.content = content
@@ -84,6 +84,7 @@ extension NoteContent {
     
     // MARK:- 删除
     static func deleteNoteContent(_ id: String) -> NoteContent {
+        let note = NoteContent()
         do {
             try note.find(["id": id])
             note.to(note.results.rows[0])
@@ -96,6 +97,7 @@ extension NoteContent {
     
     // MARK:- 修改
     static func modifyNoteContent(id: String, title: String, content: String) -> (Bool, String, NoteContent) {
+        let note = NoteContent()
         do {
             let result = try note.update(cols: ["title", "content"], params: [title, content], idName: "id", idValue: id)
             let msg = result ? "修改成功" : "修改失败"

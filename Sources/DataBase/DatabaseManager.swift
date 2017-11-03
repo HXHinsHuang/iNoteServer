@@ -13,7 +13,7 @@ class DatabaseManager {
     private init() {
         MySQLConnector.host = "127.0.0.1"
         MySQLConnector.username = "root"
-        MySQLConnector.password = "your password" //此处填你自己的mysql密码
+        MySQLConnector.password = "Hhx505608099" //此处填你自己的mysql密码
         MySQLConnector.database = "iNote"
         MySQLConnector.port = 3306
     }
