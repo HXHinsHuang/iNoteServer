@@ -60,7 +60,6 @@ extension User {
     static func register(phone: String, pwd: String) -> (String, Bool) {
         let user = User()
         user.findUserWith(phone)
-        print(user.id,user.phoneNum,user.password,user.registerTime)
         let exists = user.id != 0 ? true : false
         let message = exists ? "用户已存在" : "注册成功"
         guard !exists else {
@@ -90,7 +89,7 @@ extension User {
             let info = ["userId": "\(user.id)", "phoneNum": user.phoneNum, "registerTime": user.registerTime]
             return (true, "登录成功", info)
         } else {
-            let info = ["":""]
+            let info = ["userId": "", "phoneNum": "", "registerTime": ""]
             return (false, "用户名或密码错误", info)
         }
     }
